@@ -1,4 +1,4 @@
-# Minimax
+# [Minimax](brunolopaiva.github.io/TIC-TAC-TOE_Minimax)
 
 ### O algoritmo Minimax é uma estratégia de tomada de decisão usada em jogos de soma zero, onde dois jogadores competem diretamente um contra o outro, como xadrez, damas e tic-tac-toe. O objetivo do Minimax é determinar a melhor jogada para um jogador, assumindo que o oponente também está jogando de forma otimizada.
 
