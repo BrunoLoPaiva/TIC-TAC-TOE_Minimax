@@ -1,10 +1,20 @@
 //Game vars
-logText('NEW GAME');
-logText(`&nbsp`);
-
 let board = ['', '', '', '', '', '', '', '', ''];
 let currentPlayer = 'X';
 let round = 0;
+let running = true;
+
+logText('LOG');
+logText(`&nbsp`);
+document.getElementById('scoreboard-text').innerText = `Turn of player [${currentPlayer}]\n`;
+
+resetButton = document.createElement('button');
+resetButton.addEventListener("click", resetBoard);
+resetButton.innerText = 'Restart game'
+
+
+
+
 
 function logText(text) {
     let logDiv = document.getElementById("log");
@@ -12,44 +22,56 @@ function logText(text) {
     let nodeText = document.createElement('div');
     nodeText.innerHTML = text;
 
-    logDiv.appendChild(nodeText)
+    logDiv.appendChild(nodeText);
 
 }
 
 // Function to make a move on the board
-function makeMove(index) {
+function makeMove(index, source) {
 
-    if (board[index] !== '') {
+    if (board[index] !== '' || !running) {
+        return;
+    } else if (source == 'player' && currentPlayer != "X") {
         return;
     }
 
-    logText(`Round ${round}`);
-    logText(`Turn of player [${currentPlayer}]\n`);
+
 
     board[index] = currentPlayer;
     document.getElementsByClassName('cell')[index].innerText = currentPlayer;
 
+
+
     // Check game result
     if (checkWinner(board)) {
-        alert('Winner: ' + currentPlayer);
-        resetBoard();
+        document.getElementById('scoreboard-text').innerText = ('Winner: ' + currentPlayer);
+        running = false;
+        document.getElementById("scoreboard").appendChild(resetButton);
+        //resetBoard();
         return;
     } else if (isGameOver(board)) {
-        alert('Tie!');
-        resetBoard();
+        document.getElementById('scoreboard-text').innerText = ('Tie!');
+        running = false;
+        document.getElementById("scoreboard").appendChild(resetButton);
+        // resetBoard();
         return;
     }
 
-    logText(`The player [${currentPlayer}] chose position 3`);
+    logText(`The player [${currentPlayer}] chose position ${index}`);
     logText(`&nbsp`);
 
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    logText(`Round ${round}`);
+    logText(`Turn of player [${currentPlayer}]\n`);
+    document.getElementById('scoreboard-text').innerText = `Turn of player [${currentPlayer}]\n`;
 
     // AI move
     if (currentPlayer === 'O') {
         setTimeout(computerMove, 500);
     }
     round++;
+
+    document.getElementById('scoreboard-text').innerText = `Turn of player [${currentPlayer}]\n`;
 }
 
 
@@ -81,7 +103,14 @@ function isGameOver(board) {
 function resetBoard() {
     board = ['', '', '', '', '', '', '', '', ''];
     currentPlayer = 'X';
+    running = true;
     round = 0;
+    document.getElementById("log").innerHTML = '';
+    logText('LOG');
+    logText(`&nbsp`);
+    document.getElementById('scoreboard-text').innerText = `Turn of player [${currentPlayer}]\n`;
+    resetButton.remove()
+
 
     const cells = document.getElementsByClassName('cell');
     for (let i = 0; i < cells.length; i++) {
@@ -92,7 +121,7 @@ function resetBoard() {
 // Function for the computer move using the Minimax algorithm
 function computerMove() {
     const bestMove = findBestMove(board);
-    makeMove(bestMove);
+    makeMove(bestMove, 'AI');
 }
 
 // Function to find the best move using the Minimax algorithm
